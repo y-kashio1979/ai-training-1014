@@ -1,0 +1,65 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // メール確認済みの Google アカウントでログインしている。
+    function signedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    // ダミーデータの保存がまだ(meta/seed がない)。
+    // バッチ書き込みの中でも、exists() は書き込み前の状態を見る。
+    function notSeeded() {
+      return !exists(/databases/$(database)/documents/meta/seed);
+    }
+
+    function isTime(value) {
+      return value is string && value.matches('^([01][0-9]|2[0-3]):[0-5][0-9]$');
+    }
+
+    // 名簿: 読むだけ。作成は最初のダミーデータの保存時に限る。変更・削除はできない。
+    match /employees/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && notSeeded()
+        && request.resource.data.keys().hasOnly(['name', 'department'])
+        && request.resource.data.name is string
+        && request.resource.data.department is string;
+      allow update, delete: if false;
+    }
+
+    // お店の候補: 名簿と同じ。
+    match /shops/{id} {
+      allow read: if signedIn();
+      allow create: if signedIn() && notSeeded()
+        && request.resource.data.keys().hasOnly(['name', 'order'])
+        && request.resource.data.name is string
+        && request.resource.data.order is number;
+      allow update, delete: if false;
+    }
+
+    // 締切・ランチ開始の時刻: 名簿と同じ。
+    match /settings/config {
+      allow read: if signedIn();
+      allow create: if signedIn() && notSeeded()
+        && request.resource.data.keys().hasOnly(['deadline', 'lunchStart'])
+        && isTime(request.resource.data.deadline)
+        && isTime(request.resource.data.lunchStart);
+      allow update, delete: if false;
+    }
+
+    // ダミーデータを保存済みという印。一度作ったら変更・削除できない。
+    match /meta/seed {
+      allow read: if signedIn();
+      allow create: if signedIn() && notSeeded()
+        && request.resource.data.keys().hasOnly(['seededAt'])
+        && request.resource.data.seededAt == request.time;
+      allow update, delete: if false;
+    }
+
+    // 上に書いていないものはすべて拒否する。
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
