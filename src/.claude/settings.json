@@ -1,13 +1,13 @@
 {
   "permissions": {
-    "ask": [
-      "Bash(git push*)"
-    ],
     "deny": [
       "Read(**/.env)",
       "Read(**/.env.*)",
       "Edit(**/.env)",
       "Edit(**/.env.*)"
+    ],
+    "ask": [
+      "Bash(git push*)"
     ]
   },
   "hooks": {
@@ -23,5 +23,8 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "frontend-design@anthropic-plugin-directory": true
   }
 }
