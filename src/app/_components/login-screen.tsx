@@ -76,11 +76,11 @@ export function LoginScreen() {
   return (
     <div className="mx-auto flex w-full max-w-[390px] flex-1 flex-col gap-6 px-6 pb-8 pt-7">
       <div className="flex items-center gap-2.5">
-        <div className="flex size-9 items-center justify-center rounded-[10px] bg-brand" />
-        <span className="text-base font-bold">シャッフルランチ</span>
+        <div className="size-9 rounded-full bg-ink" />
+        <span className="font-display text-base">シャッフルランチ</span>
       </div>
 
-      <h1 className="mt-2 text-[26px] font-bold leading-snug">
+      <h1 className="mt-2 font-display text-[32px] leading-snug">
         ログインして
         <br />
         はじめましょう
@@ -92,7 +92,7 @@ export function LoginScreen() {
       <div className="flex-1" />
 
       {message && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-sm font-medium text-danger">
           {message}
         </p>
       )}
@@ -100,7 +100,7 @@ export function LoginScreen() {
         type="button"
         onClick={handleLogin}
         disabled={pending}
-        className="flex h-14 w-full items-center justify-center rounded-2xl bg-brand text-lg font-bold text-white transition-colors hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:bg-line disabled:text-muted"
+        className="flex h-14 w-full items-center justify-center rounded-2xl border-2 border-ink bg-brand text-lg font-bold text-ink shadow-[0_4px_0_var(--color-ink)] transition-[transform,box-shadow] active:translate-y-1 active:shadow-[0_0_0_var(--color-ink)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink disabled:cursor-not-allowed disabled:border-line disabled:bg-line disabled:text-muted disabled:shadow-none"
       >
         {pending ? "ログインしています…" : "Google でログイン"}
       </button>

@@ -19,7 +19,7 @@ export function LogoutButton() {
       type="button"
       onClick={handleLogout}
       disabled={pending}
-      className="text-sm text-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed"
+      className="text-sm text-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed"
     >
       ログアウト
     </button>
