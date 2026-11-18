@@ -55,7 +55,7 @@ export function LunchLoader({
         </p>
       ) : (
         <>
-          <p role="alert" className="text-base text-red-700">
+          <p role="alert" className="text-base font-medium text-danger">
             データを読み込めませんでした。ログインし直すか、時間をおいてもう一度お試しください。
           </p>
           <div>{logoutButton}</div>

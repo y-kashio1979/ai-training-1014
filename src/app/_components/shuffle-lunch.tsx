@@ -1,17 +1,18 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import type { SessionUser } from "@/lib/auth";
 import type { Employee } from "@/lib/employees";
 import { formatTime, type LunchData } from "@/lib/lunch-data";
+import { seatPositions } from "@/lib/seating";
 import type { LunchConfig } from "@/lib/time";
 
 type Step = "apply" | "applied" | "result";
 
 const primaryButton =
-  "flex h-14 w-full items-center justify-center rounded-2xl bg-brand text-lg font-bold text-white transition-colors hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:bg-line disabled:text-muted";
+  "flex h-14 w-full items-center justify-center rounded-2xl border-2 border-ink bg-brand text-lg font-bold text-ink shadow-[0_4px_0_var(--color-ink)] transition-[transform,box-shadow] active:translate-y-1 active:shadow-[0_0_0_var(--color-ink)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink disabled:cursor-not-allowed disabled:border-line disabled:bg-line disabled:text-muted disabled:shadow-none";
 const secondaryButton =
-  "flex h-14 w-full items-center justify-center rounded-2xl border-[1.5px] border-[#aeb9b2] bg-white text-base font-bold text-ink transition-colors hover:bg-canvas focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand";
+  "flex h-14 w-full items-center justify-center rounded-2xl border-2 border-ink bg-white text-base font-bold text-ink transition-colors hover:bg-brand-soft focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink";
 
 export function ShuffleLunch({
   user,
@@ -64,13 +65,13 @@ function Header({ userName }: { userName: string | null }) {
   return (
     <header className="flex items-center justify-between">
       <div className="flex items-center gap-2.5">
-        <div className="flex size-9 items-center justify-center rounded-[10px] bg-brand">
+        <div className="flex size-9 items-center justify-center rounded-full bg-ink">
           <svg
             width="20"
             height="20"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#fff"
+            stroke="#f2b233"
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -83,7 +84,7 @@ function Header({ userName }: { userName: string | null }) {
             <path d="M4 4l5 5" />
           </svg>
         </div>
-        <span className="text-base font-bold">シャッフルランチ</span>
+        <span className="font-display text-base">シャッフルランチ</span>
       </div>
       {userName && <span className="text-sm text-muted">{userName}</span>}
     </header>
@@ -106,15 +107,15 @@ function ApplyScreen({
 
   return (
     <>
-      <h1 className="mt-2 text-[22px] font-bold leading-snug text-[#3c4640]">
+      <h1 className="mt-2 font-display text-[26px] leading-snug">
         今週のランチに
         <br />
         参加しますか?
       </h1>
 
-      <dl className="flex flex-col gap-3.5">
+      <dl className="flex flex-col divide-y divide-line rounded-[20px] border-2 border-ink bg-white px-5 py-1">
         {rows.map(([label, value]) => (
-          <div key={label} className="flex items-baseline justify-between">
+          <div key={label} className="flex items-baseline justify-between py-3.5">
             <dt className="text-[15px] text-muted">{label}</dt>
             <dd className="text-[15px] font-bold">{value}</dd>
           </div>
@@ -141,14 +142,14 @@ function AppliedScreen({
 }) {
   return (
     <>
-      <div className="flex items-center gap-3 rounded-[14px] bg-brand-soft px-4 py-3.5">
-        <span className="flex size-7 flex-none items-center justify-center rounded-full bg-brand">
+      <div className="flex items-center gap-3 rounded-[14px] border-2 border-ink bg-brand-soft px-4 py-3.5">
+        <span className="flex size-7 flex-none items-center justify-center rounded-full bg-ink">
           <svg
             width="16"
             height="16"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#fff"
+            stroke="#f2b233"
             strokeWidth="3"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -157,21 +158,21 @@ function AppliedScreen({
             <path d="m5 12 5 5 9-10" />
           </svg>
         </span>
-        <p className="text-base font-bold text-brand-dark">申し込みました</p>
+        <p className="text-base font-bold text-ink">申し込みました</p>
       </div>
 
-      <div className="flex flex-col items-center gap-1.5 rounded-[18px] border border-line bg-white px-5 py-6">
+      <div className="flex flex-col items-center gap-1.5 rounded-[24px] border-2 border-ink bg-white px-5 py-6">
         <p className="text-sm text-muted">グループ発表まで</p>
-        <p className="text-[44px] font-bold leading-tight">
-          1<span className="mx-1.5 text-lg font-medium">時間</span>20
-          <span className="ml-0.5 text-lg font-medium">分</span>
+        <p className="font-display text-[48px] leading-tight">
+          1<span className="mx-1.5 font-sans text-lg font-medium">時間</span>20
+          <span className="ml-0.5 font-sans text-lg font-medium">分</span>
         </p>
         <p className="text-sm text-muted">
           {formatTime(config.deadline)} に決定
         </p>
       </div>
 
-      <p className="rounded-[18px] border border-line bg-white px-5 py-4 text-[15px] font-medium">
+      <p className="rounded-full border-2 border-ink bg-white px-5 py-3 text-center text-[15px] font-medium">
         いま <span className="font-bold">9人</span> が参加予定
       </p>
 
@@ -184,7 +185,7 @@ function AppliedScreen({
         <button
           type="button"
           onClick={onPreviewResult}
-          className="min-h-11 text-[13px] text-muted underline"
+          className="min-h-11 text-[13px] text-muted underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-ink"
         >
           (モック)グループ発表の画面を見る
         </button>
@@ -207,53 +208,62 @@ function ResultScreen({
     me,
     ...data.employees.filter((e) => e.id !== me.id).slice(0, 3),
   ];
+  const seats = seatPositions(members.length);
 
   return (
     <>
-      <section className="flex flex-col gap-1.5 rounded-[18px] bg-brand px-5 py-[18px] text-white">
-        <p className="text-[13px] font-medium opacity-95">
-          お知らせ · 本日 {formatTime(data.config.deadline)}
+      <section className="flex flex-col gap-1.5">
+        <p className="text-[13px] font-medium text-muted">
+          本日 {formatTime(data.config.deadline)} に決定
         </p>
-        <p className="text-[22px] font-bold leading-snug">
-          グループが決まりました
-        </p>
-        <p className="text-sm leading-relaxed">
+        <h1 className="font-display text-[28px] leading-snug">
+          グループが
+          <br />
+          決まりました
+        </h1>
+        <p className="text-sm leading-relaxed text-muted">
           {formatTime(data.config.lunchStart)} にランチ。お店はグループで決めましょう。
         </p>
       </section>
 
-      <section className="flex flex-col gap-3 rounded-[18px] border border-line bg-white px-5 py-[18px]">
-        <div className="flex items-baseline justify-between">
-          <h1 className="text-lg font-bold">あなたのグループ</h1>
-          <span className="text-[13px] text-muted">Bグループ · {members.length}人</span>
-        </div>
-        <ul className="flex flex-col gap-1">
-          {members.map((m) => {
-            const isMe = m.id === me.id;
-            return (
-              <li
-                key={m.id}
-                className={`flex min-h-12 items-center gap-3 rounded-xl px-2.5 ${isMe ? "bg-brand-soft" : ""}`}
-              >
-                <span
-                  className={`flex-1 text-[15px] ${isMe ? "font-bold" : "font-medium"}`}
+      <section aria-label="あなたのグループ" className="flex flex-col gap-1">
+        <p className="text-right text-[13px] text-muted">
+          Bグループ · {members.length}人
+        </p>
+        <div className="relative mx-auto aspect-[340/300] w-full">
+          <div
+            aria-hidden="true"
+            className="gingham absolute left-1/2 top-1/2 size-[112px] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-ink"
+          />
+          <ul>
+            {members.map((m, i) => {
+              const isMe = m.id === me.id;
+              const seat = seats[i];
+              const style = {
+                left: `${seat.left}%`,
+                top: `${seat.top}%`,
+                "--i": i,
+              } as CSSProperties;
+              return (
+                <li
+                  key={m.id}
+                  style={style}
+                  className={`seat absolute flex min-h-11 max-w-[112px] flex-col items-center justify-center rounded-2xl border-2 border-ink px-3 py-1.5 text-center ${isMe ? "bg-brand" : "bg-white"}`}
                 >
-                  {m.name}
+                  <span className="text-[15px] font-bold leading-tight">
+                    {m.name}
+                  </span>
                   {m.department && (
-                    <span
-                      className={`ml-1.5 text-[13px] font-normal ${isMe ? "text-brand-dark" : "text-muted"}`}
-                    >
+                    <span className="text-[11px] leading-tight text-muted">
                       {m.department}
                     </span>
                   )}
-                </span>
-                {isMe && (
-                  <span className="text-xs font-bold text-brand-dark">あなた</span>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+                  {isMe && <span className="text-[11px] font-bold">あなた</span>}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </section>
 
       <section className="flex flex-col gap-2">
@@ -262,7 +272,7 @@ function ResultScreen({
           {data.shops.map((shop) => (
             <li
               key={shop.id}
-              className="flex h-9 items-center rounded-full border border-[#cbd3cd] bg-white px-3.5 text-sm"
+              className="flex h-9 items-center rounded-full border-[1.5px] border-ink bg-white px-3.5 text-sm"
             >
               {shop.name}
             </li>
