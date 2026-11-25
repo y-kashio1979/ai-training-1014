@@ -1,5 +1,6 @@
 import "server-only";
 import { cookies } from "next/headers";
+import { connection } from "next/server";
 import { createRemoteJWKSet, jwtVerify, type JWTPayload } from "jose";
 import {
   isAllowedEmailDomain,
@@ -83,6 +84,8 @@ export async function createSession(
 
 /** 今ログインしている人を返す。ログインしていない・期限切れ・無効なら null。 */
 export async function getSessionUser(): Promise<SessionUser | null> {
+  // トークンの検証は内部で Date.now() を使うため、プリレンダーではなくリクエスト時に実行する。
+  await connection();
   const cookie = (await cookies()).get(COOKIE_NAME)?.value;
   if (!cookie) return null;
   const result = await verifyIdToken(cookie);
